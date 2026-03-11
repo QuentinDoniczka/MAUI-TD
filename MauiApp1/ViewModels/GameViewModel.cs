@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MauiApp1.Models;
@@ -24,11 +25,9 @@ public partial class GameViewModel : ObservableObject
     [ObservableProperty]
     private string _historyText = "Joueur : 0 | Bot : 0 | Nul : 0";
 
-    public CellValue BotSymbol { get; private set; } = CellValue.O;
+    public ObservableCollection<string> Cells { get; } = new(Enumerable.Repeat(string.Empty, 9));
 
-    public bool IsBotTurn => !IsGameOver && CurrentPlayer == BotSymbol;
-
-    public event Action? GameReset;
+    private CellValue _botSymbol = CellValue.O;
 
     public GameViewModel(IBotPlayer botPlayer, IGameHistoryService historyService)
     {
@@ -37,7 +36,17 @@ public partial class GameViewModel : ObservableObject
         _ = LoadHistoryAsync();
     }
 
-    public string? Play(int index)
+    [RelayCommand]
+    private void PlayCell(string indexStr)
+    {
+        if (CurrentPlayer == _botSymbol) return;
+
+        var index = int.Parse(indexStr);
+        if (Play(index) != null)
+            PlayBotIfNeeded();
+    }
+
+    private string? Play(int index)
     {
         if (IsGameOver)
             return null;
@@ -46,13 +55,14 @@ public partial class GameViewModel : ObservableObject
             return null;
 
         var symbol = CurrentPlayer == CellValue.X ? "X" : "O";
+        Cells[index] = symbol;
 
         var winner = _board.CheckWinner();
         if (winner != CellValue.Empty)
         {
             StatusText = $"{winner} gagne !";
             IsGameOver = true;
-            var result = winner == BotSymbol ? GameResult.BotWin : GameResult.PlayerWin;
+            var result = winner == _botSymbol ? GameResult.BotWin : GameResult.PlayerWin;
             _ = RecordAndUpdateHistoryAsync(result);
             return symbol;
         }
@@ -70,29 +80,25 @@ public partial class GameViewModel : ObservableObject
         return symbol;
     }
 
-    public (int index, string symbol)? PlayBot()
+    private void PlayBotIfNeeded()
     {
-        if (!IsBotTurn)
-            return null;
+        if (IsGameOver || CurrentPlayer != _botSymbol) return;
 
         var moveIndex = _botPlayer.ChooseMove(_board);
-        var symbol = Play(moveIndex);
-
-        if (symbol == null)
-            return null;
-
-        return (moveIndex, symbol);
+        Play(moveIndex);
     }
 
     [RelayCommand]
     private void Reset()
     {
         _board.Reset();
+        for (var i = 0; i < 9; i++)
+            Cells[i] = string.Empty;
         CurrentPlayer = CellValue.X;
-        BotSymbol = _random.Next(2) == 0 ? CellValue.X : CellValue.O;
+        _botSymbol = _random.Next(2) == 0 ? CellValue.X : CellValue.O;
         StatusText = "Tour de X";
         IsGameOver = false;
-        GameReset?.Invoke();
+        PlayBotIfNeeded();
     }
 
     private async Task LoadHistoryAsync()
@@ -104,8 +110,7 @@ public partial class GameViewModel : ObservableObject
     private async Task RecordAndUpdateHistoryAsync(GameResult result)
     {
         await _historyService.RecordResultAsync(result);
-        var history = await _historyService.GetHistoryAsync();
-        HistoryText = FormatHistory(history);
+        await LoadHistoryAsync();
     }
 
     private static string FormatHistory(GameHistory history)
