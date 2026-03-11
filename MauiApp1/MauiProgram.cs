@@ -1,5 +1,4 @@
-﻿using MauiApp1.ViewModels;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 namespace MauiApp1;
 
@@ -16,7 +15,6 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        builder.Services.AddTransient<GameViewModel>();
         builder.Services.AddTransient<MainPage>();
 
 #if DEBUG
