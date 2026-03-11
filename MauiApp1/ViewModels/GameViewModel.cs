@@ -60,7 +60,7 @@ public partial class GameViewModel : ObservableObject
         var winner = _board.CheckWinner();
         if (winner != CellValue.Empty)
         {
-            StatusText = $"{winner} gagne !";
+            StatusText = PlayerWinMesasge(winner);
             IsGameOver = true;
             var result = winner == _botSymbol ? GameResult.BotWin : GameResult.PlayerWin;
             _ = RecordAndUpdateHistoryAsync(result);
@@ -78,6 +78,11 @@ public partial class GameViewModel : ObservableObject
         CurrentPlayer = CurrentPlayer == CellValue.X ? CellValue.O : CellValue.X;
         StatusText = $"Tour de {CurrentPlayer}";
         return symbol;
+    }
+
+    private static string PlayerWinMesasge(CellValue winner)
+    {
+        return $"{winner} gagne !";
     }
 
     private void PlayBotIfNeeded()

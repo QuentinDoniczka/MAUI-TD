@@ -31,7 +31,6 @@ public class GameViewModelTests
     public void BotWins()
     {
         var gameViewModel = CreateGameViewModel(3, 4, 5);
-
         gameViewModel.PlayCellCommand.Execute("0");
         gameViewModel.PlayCellCommand.Execute("1");
         gameViewModel.PlayCellCommand.Execute("6");
@@ -59,7 +58,6 @@ public class GameViewModelTests
     public void PlayOnOccupiedCellOrAfterGameOver_IsIgnored()
     {
         var gameViewModel = CreateGameViewModel(3, 4);
-
         gameViewModel.PlayCellCommand.Execute("0");
         gameViewModel.PlayCellCommand.Execute("0");
         Assert.Equal("X", gameViewModel.Cells[0]);
