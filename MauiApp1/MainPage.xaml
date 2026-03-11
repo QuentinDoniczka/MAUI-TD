@@ -12,30 +12,40 @@
         Spacing="20">
 
         <Label
+            Text="Historique des victoires"
+            FontSize="20"
+            FontAttributes="Bold"
+            HorizontalOptions="Center" />
+
+        <Label
+            Text="{Binding HistoryText}"
+            FontSize="16"
+            HorizontalOptions="Center" />
+
+        <Label
             Text="{Binding StatusText}"
             FontSize="28"
             FontAttributes="Bold"
             HorizontalOptions="Center" />
 
         <Grid
-            x:Name="BoardGrid"
             RowDefinitions="100,100,100"
             ColumnDefinitions="100,100,100"
             RowSpacing="4"
             ColumnSpacing="4"
             HorizontalOptions="Center">
 
-            <Button Grid.Row="0" Grid.Column="0" Clicked="OnCellClicked" FontSize="40" FontAttributes="Bold" />
-            <Button Grid.Row="0" Grid.Column="1" Clicked="OnCellClicked" FontSize="40" FontAttributes="Bold" />
-            <Button Grid.Row="0" Grid.Column="2" Clicked="OnCellClicked" FontSize="40" FontAttributes="Bold" />
+            <Button Grid.Row="0" Grid.Column="0" Text="{Binding Cells[0]}" Command="{Binding PlayCellCommand}" CommandParameter="0" FontSize="40" FontAttributes="Bold" />
+            <Button Grid.Row="0" Grid.Column="1" Text="{Binding Cells[1]}" Command="{Binding PlayCellCommand}" CommandParameter="1" FontSize="40" FontAttributes="Bold" />
+            <Button Grid.Row="0" Grid.Column="2" Text="{Binding Cells[2]}" Command="{Binding PlayCellCommand}" CommandParameter="2" FontSize="40" FontAttributes="Bold" />
 
-            <Button Grid.Row="1" Grid.Column="0" Clicked="OnCellClicked" FontSize="40" FontAttributes="Bold" />
-            <Button Grid.Row="1" Grid.Column="1" Clicked="OnCellClicked" FontSize="40" FontAttributes="Bold" />
-            <Button Grid.Row="1" Grid.Column="2" Clicked="OnCellClicked" FontSize="40" FontAttributes="Bold" />
+            <Button Grid.Row="1" Grid.Column="0" Text="{Binding Cells[3]}" Command="{Binding PlayCellCommand}" CommandParameter="3" FontSize="40" FontAttributes="Bold" />
+            <Button Grid.Row="1" Grid.Column="1" Text="{Binding Cells[4]}" Command="{Binding PlayCellCommand}" CommandParameter="4" FontSize="40" FontAttributes="Bold" />
+            <Button Grid.Row="1" Grid.Column="2" Text="{Binding Cells[5]}" Command="{Binding PlayCellCommand}" CommandParameter="5" FontSize="40" FontAttributes="Bold" />
 
-            <Button Grid.Row="2" Grid.Column="0" Clicked="OnCellClicked" FontSize="40" FontAttributes="Bold" />
-            <Button Grid.Row="2" Grid.Column="1" Clicked="OnCellClicked" FontSize="40" FontAttributes="Bold" />
-            <Button Grid.Row="2" Grid.Column="2" Clicked="OnCellClicked" FontSize="40" FontAttributes="Bold" />
+            <Button Grid.Row="2" Grid.Column="0" Text="{Binding Cells[6]}" Command="{Binding PlayCellCommand}" CommandParameter="6" FontSize="40" FontAttributes="Bold" />
+            <Button Grid.Row="2" Grid.Column="1" Text="{Binding Cells[7]}" Command="{Binding PlayCellCommand}" CommandParameter="7" FontSize="40" FontAttributes="Bold" />
+            <Button Grid.Row="2" Grid.Column="2" Text="{Binding Cells[8]}" Command="{Binding PlayCellCommand}" CommandParameter="8" FontSize="40" FontAttributes="Bold" />
 
         </Grid>
 
