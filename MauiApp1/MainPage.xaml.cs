@@ -1,44 +1,33 @@
+using System.Collections.Specialized;
 using MauiApp1.ViewModels;
 
 namespace MauiApp1;
 
 public partial class MainPage : ContentPage
 {
-    private readonly GameViewModel _viewModel;
-    private readonly List<Button> _buttons = [];
+    private readonly Button[] _cellButtons;
 
     public MainPage(GameViewModel viewModel)
     {
         InitializeComponent();
-        _viewModel = viewModel;
         BindingContext = viewModel;
 
-        _buttons = BoardGrid.Children.Cast<Button>().ToList();
+        _cellButtons = [Cell0, Cell1, Cell2, Cell3, Cell4, Cell5, Cell6, Cell7, Cell8];
 
-        _viewModel.ResetCommand.Execute(null);
-        ResetButtons();
+        viewModel.Cells.CollectionChanged += OnCellsChanged;
+        viewModel.ResetCommand.Execute(null);
     }
 
-    private void OnCellClicked(object? sender, EventArgs e)
+    private void OnCellsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (sender is not Button button) return;
-
-        var index = _buttons.IndexOf(button);
-        var symbol = _viewModel.Play(index);
-
-        if (symbol != null)
-            button.Text = symbol;
-    }
-
-    private void ResetButtons()
-    {
-        _viewModel.PropertyChanged += (_, args) =>
+        if (e.Action == NotifyCollectionChangedAction.Replace && e.NewStartingIndex >= 0)
         {
-            if (args.PropertyName == nameof(GameViewModel.IsGameOver) && !_viewModel.IsGameOver)
-            {
-                foreach (var btn in _buttons)
-                    btn.Text = string.Empty;
-            }
-        };
+            _cellButtons[e.NewStartingIndex].Text = e.NewItems?[0]?.ToString() ?? string.Empty;
+            return;
+        }
+
+        var cells = (IList<string>)sender!;
+        for (var i = 0; i < _cellButtons.Length; i++)
+            _cellButtons[i].Text = cells[i];
     }
 }
