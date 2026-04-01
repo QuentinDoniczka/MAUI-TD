@@ -18,7 +18,11 @@ public static class MauiProgram
             });
 
         builder.Services.AddSingleton<IBotPlayer, BotPlayer>();
-        builder.Services.AddSingleton<IGameHistoryService, GameHistoryService>();
+        builder.Services.AddSingleton<IGameHistoryService>(_ =>
+        {
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "gamehistory.db");
+            return new SqliteGameHistoryService(dbPath);
+        });
         builder.Services.AddTransient<GameViewModel>();
         builder.Services.AddTransient<MainPage>();
 
